@@ -1,0 +1,26 @@
+:root {
+    --primario: #fefefe;
+    --secundario: #0098db;
+    --fondo: #ecedef;
+    --aceptar: #28a745;
+    --error: #e65757;
+    --seleccionado: #007aaf;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+    background-color: unset;
+    border: none;
+    color: var(--primario);
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+}

@@ -1,0 +1,93 @@
+body {
+    background-color: var(--fondo);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 1rem;
+}
+
+form {
+    position: relative;
+}
+
+form,
+.row input {
+    background-color: var(--primario);
+}
+
+form {
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 20px -3px #000000;
+}
+
+@media (min-width: 1024px) {
+    form {
+        width: 30%;
+    }
+}
+
+h1 {
+    text-align: center;
+    color: var(--secundario);
+    margin-bottom: 1rem;
+}
+
+h1::after {
+    content: '';
+    display: block;
+    width: 15%;
+    height: 1px;
+    background-color: var(--secundario);
+    margin: auto;
+}
+
+.row {
+    flex-direction: column;
+    gap: 0 !important;
+}
+
+.row input:focus {
+    width: 100%;
+}
+
+.row input:focus::placeholder {
+    opacity: 0;
+}
+
+button {
+    background-color: var(--secundario);
+    border: none;
+    border-radius: .8rem;
+    color: var(--primario);
+    padding: .5rem;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    font-size: 1.2rem;
+    margin-top: 2rem;
+    cursor: pointer;
+    width: 60%;
+    transition: .2s background-color;
+}
+
+button:hover {
+    background-color: var(--seleccionado);
+}
+
+@keyframes loading {
+    from {
+        transform: rotate(0deg);
+    }
+    
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+button img {
+    animation: loading .5s infinite ease-in-out;
+    width: 30px;
+    height: 30px;
+}

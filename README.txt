@@ -1,0 +1,1 @@
+Se necesita tener instalado XAMPP 8.1 o PHP 8.1 en adelante, ya que este proyecto utiliza enums.
