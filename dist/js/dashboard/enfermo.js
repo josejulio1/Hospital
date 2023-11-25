@@ -1,19 +1,19 @@
 const $searchEnfermoSelect = document.getElementById('search-enfermo-select');
-const $searchEnfermo = document.getElementById('search-enfermo');
+export const $searchEnfermo = document.getElementById('search-enfermo');
 const $searchEnfermoImg = document.getElementById('search-enfermo-img');
 export const $tableEnfermo = document.getElementById('table-enfermo');
-let oldContent;
+export let tablaEnfermoContent;
 
 // Sorting
-const $sortDniEnfermo = document.getElementById('sort-dni-enfermo');
+/* const $sortDniEnfermo = document.getElementById('sort-dni-enfermo');
 const $sortNombreEnfermo = document.getElementById('sort-nombre-enfermo');
 const $sortApellidosEnfermo = document.getElementById('sort-apellidos-enfermo');
 const $sortDniDoctorEnfermo = document.getElementById('sort-dni-doctor-enfermo');
-const $sortNombreCompaniaEnfermo = document.getElementById('sort-nombre-compania-enfermo');
+const $sortNombreCompaniaEnfermo = document.getElementById('sort-nombre-compania-enfermo'); */
 
 // Events
 window.addEventListener('load', () => {
-    oldContent = $tableEnfermo.innerHTML;
+    tablaEnfermoContent = $tableEnfermo.innerHTML;
 })
 
 $searchEnfermoSelect.addEventListener('change', () => {
@@ -22,7 +22,7 @@ $searchEnfermoSelect.addEventListener('change', () => {
 
 $searchEnfermo.addEventListener('keyup', () => {
     if (!$searchEnfermo.value) {
-        $tableEnfermo.innerHTML = oldContent;
+        $tableEnfermo.innerHTML = tablaEnfermoContent;
     }
 })
 
@@ -36,15 +36,15 @@ $searchEnfermoImg.addEventListener('click', () => {
     search($searchEnfermoSelect.value, $searchEnfermo.value);
 });
 
-$sortDniEnfermo.addEventListener('click', sortEvent);
+/* $sortDniEnfermo.addEventListener('click', sortEvent);
 $sortNombreEnfermo.addEventListener('click', sortEvent);
 $sortApellidosEnfermo.addEventListener('click', sortEvent);
 $sortDniDoctorEnfermo.addEventListener('click', sortEvent);
-$sortNombreCompaniaEnfermo.addEventListener('click', sortEvent);
+$sortNombreCompaniaEnfermo.addEventListener('click', sortEvent); */
 
 // Functions
 function search(column, text) {
-    $tableEnfermo.innerHTML = oldContent;
+    $tableEnfermo.innerHTML = tablaEnfermoContent;
     let searchedContent = document.createElement('tbody');
     const $rows = $tableEnfermo.children;
     for (const row of $rows) {
@@ -55,18 +55,14 @@ function search(column, text) {
     $tableEnfermo.innerHTML = searchedContent.innerHTML;
 }
 
-function sortEvent(e) {
-    const target = e.target;
-    const $sortType = document.getElementById(`${target.id}-type`);
-    const actualValue = -parseInt($sortType.getAttribute('value'));
-    sortColumn(parseInt(target.getAttribute('value')), actualValue);
-    $sortType.setAttribute('value', actualValue);
-    $sortType.classList.toggle('sorted-desc');
+/**
+ * Esta función es necesaria para poder cambiar las filas de la tabla desde otro módulo, ya que no se
+ * puede cambiar el valor de la variable original cuando esta es exportada
+ */
+export function changeOldTableEnfermoContent(content) {
+    tablaEnfermoContent = content;
 }
 
-export function sortColumn(column, order) {
-    const $rows = [...document.querySelectorAll('#table-enfermo tr')];
-    $rows.sort((a, b) => a.children[column].textContent < b.children[column].textContent ? order : -order);
-    $tableEnfermo.innerHTML = '';
-    $rows.forEach(row => $tableEnfermo.appendChild(row));
+export function changeTableEnfermoContent(content) {
+    $tableEnfermo.innerHTML = content;
 }

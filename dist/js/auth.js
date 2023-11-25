@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES, removeErrors } from "./utils/utils.js";
+import { removeErrors } from "./utils/utils.js";
 
 const $usuario = document.getElementById('usuario');
 const $usuarioError = document.getElementById('usuario-error');
@@ -9,6 +9,11 @@ const $error = document.getElementById('error');
 
 const $buttonText = document.getElementById('button-text');
 const $loading = document.getElementById('loading');
+
+export const ERROR_MESSAGES = {
+    404: 'Usuario o contraseña incorrectos',
+    503: 'No se pudo conectar a la base de datos. Inténtelo más tarde'
+}
 
 $usuario.addEventListener('focusout', removeErrors);
 $contrasenia.addEventListener('focusout', removeErrors);

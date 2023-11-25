@@ -15,7 +15,7 @@ CREATE TABLE Enfermo (
     nombre VARCHAR(30) NOT NULL,
     apellidos VARCHAR(50) NOT NULL,
     dni_doctor VARCHAR(9) NOT NULL,
-    id_compania INT NOT NULL
+    nombre_compania VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Usuario (
@@ -24,8 +24,7 @@ CREATE TABLE Usuario (
 );
 
 CREATE TABLE Compania (
-    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(50) UNIQUE NOT NULL
+    nombre VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Consulta (
@@ -49,6 +48,10 @@ CREATE TABLE Consulta_Medicamento (
 );
 
 -- Alter
+ALTER TABLE Compania
+ADD CONSTRAINT pk_compania PRIMARY KEY(nombre)
+;
+
 ALTER TABLE Doctor
 ADD CONSTRAINT pk_doctor PRIMARY KEY(dni)
 ;
@@ -56,7 +59,7 @@ ADD CONSTRAINT pk_doctor PRIMARY KEY(dni)
 ALTER TABLE Enfermo
 ADD CONSTRAINT pk_enfermo PRIMARY KEY(dni),
 ADD CONSTRAINT fk_enfermo_dniDoctor FOREIGN KEY(dni_doctor) REFERENCES Doctor(dni),
-ADD CONSTRAINT fk_enfermo_idCompania FOREIGN KEY(id_compania) REFERENCES Compania(id)
+ADD CONSTRAINT fk_enfermo_idCompania FOREIGN KEY(nombre_compania) REFERENCES Compania(nombre)
 ;
 
 ALTER TABLE Consulta
@@ -69,7 +72,3 @@ ADD CONSTRAINT pk_consultaMedicamento PRIMARY KEY(id_consulta, id_medicamento),
 ADD CONSTRAINT fk_consultaMedicamento_idConsulta FOREIGN KEY(id_consulta) REFERENCES Consulta(id),
 ADD CONSTRAINT fk_consultaMedicamento_idMedicamento FOREIGN KEY(id_medicamento) REFERENCES Medicamento(id)
 ;
-
--- Views
-CREATE VIEW v_enfermo_nombre_compania AS
-SELECT e.dni, e.nombre, e.apellidos, e.dni_doctor, c.nombre AS 'nombre_compania' FROM enfermo e JOIN compania c ON e.id_compania = c.id;

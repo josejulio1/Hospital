@@ -1,7 +1,9 @@
 import { EnfermoRow } from "../models/EnfermoRow.js";
-import { $tableEnfermo, sortColumn } from "../dashboard/enfermo.js";
-import { ERROR_MESSAGES, removeErrors } from "../utils/utils.js";
-import { $modalInfoContainer, $modalInfoCorrecto, $modalInfoIncorrecto, $modalInfoMensaje } from "./modal-info.js";
+import { $searchEnfermo, $tableEnfermo, changeOldTableEnfermoContent, changeTableEnfermoContent, tablaEnfermoContent } from "../dashboard/enfermo.js";
+import { removeErrors } from "../utils/utils.js";
+import { $modalInfoContainer, correctModalInfo, incorrectModalInfo } from "./modal-info.js";
+import { ERROR_MESSAGES } from "../dashboard/errors.js";
+import { sortColumn } from "../dashboard/sort.js";
 
 const $buttonNuevoEnfermo = document.getElementById('nuevo-enfermo');
 
@@ -21,24 +23,26 @@ const $apellidosEnfermo = document.getElementById('apellidos-enfermo');
 const $apellidosEnfermoError = document.getElementById('apellidos-enfermo-error');
 const $dniDoctorEnfermo = document.getElementById('dni-doctor-enfermo');
 const $dniDoctorEnfermoError = document.getElementById('dni-doctor-enfermo-error');
-const $optionsDoctores = document.querySelectorAll('#doctores option');
+const $listaDoctoresItems = document.querySelectorAll('.lista-doctores-item');
 const $nombreCompania = document.getElementById('nombre-compania');
 const $nombreCompaniaError = document.getElementById('nombre-compania-error');
-const $optionsCompanias = document.querySelectorAll('#companias option');
+const $listaCompaniasItems = document.querySelectorAll('.lista-companias-item');
 const $buttonCrearEnfermo = document.getElementById('accept-enfermo');
 
 // Regex
 const dniRegex = new RegExp(/^[0-9]{8}[a-zA-Z]$/);
 
 // Modal
-$modalEnfermoContainer.addEventListener('click', hideModal);
+$modalEnfermoContainer.addEventListener('mousedown', hideModalEnfermo);
 
-$modalEnfermo.addEventListener('click', e => e.stopPropagation());
+$modalEnfermo.addEventListener('mousedown', e => e.stopPropagation());
 
-$buttonCancelEnfermo.addEventListener('click', hideModal);
+$buttonCancelEnfermo.addEventListener('click', hideModalEnfermo);
 
 // Modal Form
 $buttonNuevoEnfermo.addEventListener('click', () => {
+    $searchEnfermo.value = '';
+    changeTableEnfermoContent(tablaEnfermoContent);
     $modalEnfermoContainer.classList.remove('hide');
 })
 
@@ -57,6 +61,16 @@ $dniEnfermo.addEventListener('keyup', () => {
         $dniIncorrectoImg.classList.remove('hide');
     }
 })
+
+
+/* $dniDoctorEnfermo.addEventListener('focusout', () => hideList); */
+
+/* $listaDoctoresItems.forEach(listaDoctorItem => {
+    listaDoctorItem.addEventListener('click', e => {
+        $dniDoctorEnfermo.value = e.target.children[0].textContent;
+        $listaDoctores.classList.add('hide');
+    })
+}) */
 
 $buttonCrearEnfermo.addEventListener('click', e => {
     e.preventDefault();
@@ -81,10 +95,9 @@ $buttonCrearEnfermo.addEventListener('click', e => {
     }
     
     let dniDoctorExiste = false;
-    const optionsDniDoctor = $optionsDoctores.values();
     const dniDoctorEnfermoValue = $dniDoctorEnfermo.value;
-    for (const dniDoctor of optionsDniDoctor) {
-        if (dniDoctor.value == dniDoctorEnfermoValue) {
+    for (const dniDoctor of $listaDoctoresItems) {
+        if (dniDoctor.children[0].textContent == dniDoctorEnfermoValue) {
             dniDoctorExiste = true;
             break;
         }
@@ -96,10 +109,9 @@ $buttonCrearEnfermo.addEventListener('click', e => {
     }
     
     let nombreCompaniaExiste = false;
-    const optionsNombreCompania = $optionsCompanias.values();
     const nombreCompaniaValue = $nombreCompania.value;
-    for (const nombreCompania of optionsNombreCompania) {
-        if (nombreCompania.value == nombreCompaniaValue) {
+    for (const nombreCompania of $listaCompaniasItems) {
+        if (nombreCompania.children[0].textContent == nombreCompaniaValue) {
             nombreCompaniaExiste = true;
             break;
         }
@@ -125,18 +137,17 @@ $buttonCrearEnfermo.addEventListener('click', e => {
         body: fd
     })
     .then(response => {
-        hideModal();
+        hideModalEnfermo();
         $modalInfoContainer.classList.remove('hide');
         if (response.status != 200) {
-            $modalInfoMensaje.textContent = ERROR_MESSAGES[response.status];
-            $modalInfoIncorrecto.classList.remove('hide');
+            incorrectModalInfo(ERROR_MESSAGES[response.status])
             return;
         }
-        $tableEnfermo.appendChild(new EnfermoRow($dniEnfermo.value, $nombreEnfermo.value, $apellidosEnfermo.value, $dniDoctorEnfermo.value, $nombreCompania.textContent).getRow());
-        sortColumn(0, -1);
+        $tableEnfermo.appendChild(new EnfermoRow($dniEnfermo.value, $nombreEnfermo.value, $apellidosEnfermo.value, $dniDoctorEnfermo.value, $nombreCompania.value).getRow());
+        changeOldTableEnfermoContent($tableEnfermo.innerHTML);
+        sortColumn($tableEnfermo, 0, -1);
         clearFields();
-        $modalInfoCorrecto.classList.remove('hide');
-        $modalInfoMensaje.textContent = 'El usuario se creó correctamente';
+        correctModalInfo('El usuario se creó correctamente');
     })
 })
 
@@ -151,7 +162,7 @@ function checkDni(dni) {
     return letras[parseInt(dni.substring(0, dni.length - 1)) % 23] == dni.charAt(dni.length - 1);
 }
 
-function hideModal() {
+function hideModalEnfermo() {
     $modalEnfermo.classList.add('close-modal');
     $modalEnfermo.addEventListener('animationend', function listener() {
         $modalEnfermoContainer.classList.add('hide');

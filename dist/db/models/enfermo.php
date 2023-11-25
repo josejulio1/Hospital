@@ -4,6 +4,6 @@ enum enfermo {
     case nombre;
     case apellidos;
     case dni_doctor;
-    case id_compania;
+    case nombre_compania;
 }
 ?>

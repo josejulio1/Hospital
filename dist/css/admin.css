@@ -140,8 +140,12 @@
     padding: .4rem 0;
 }
 
-.search select {
+.search select,
+.search input {
     border-radius: 1rem;
+}
+
+.search select {
     font-weight: bold;
     text-align: center;
     padding: 0 .6rem;

@@ -12,9 +12,3 @@ export function removeErrors(e) {
         document.getElementById(`${target.id}-error`).classList.add('hide');
     }
 }
-
-export const ERROR_MESSAGES = {
-    404: 'Usuario o contraseña incorrectos',
-    409: 'El registro no se pudo crear correctamente. Ya existe en la base de datos',
-    503: 'No se pudo conectar a la base de datos. Inténtelo más tarde'
-}

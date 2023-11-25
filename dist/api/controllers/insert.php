@@ -6,11 +6,20 @@ if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 }
 
 // Volver a validar los datos
+require_once '../utils/checkers.php';
 $formValues = array_values($_POST);
 foreach ($formValues as $formValue) {
     if (!$formValue) {
         return http_response_code(NOT_FOUND);
     }
+}
+$dni = $formValues[0];
+if (strlen($dni) != 9 || !checkDni($dni)) {
+    return http_response_code(NOT_FOUND);
+}
+$dniDoctor = $formValues[3];
+if (strlen($dniDoctor) != 9 || !checkDni($dniDoctor)) {
+    return http_response_code(NOT_FOUND);
 }
 
 require_once __DIR__ . '/../../db/Database.php';
