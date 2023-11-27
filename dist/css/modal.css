@@ -51,6 +51,7 @@
     display: flex;
     gap: 1rem;
     flex-direction: column;
+    justify-content: center;
     animation: open-modal .5s ease-in-out;
 }
 

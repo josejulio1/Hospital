@@ -1,16 +1,10 @@
 import { EnfermoRow } from "../models/EnfermoRow.js";
-import { $searchEnfermo, $tableEnfermo, changeOldTableEnfermoContent, changeTableEnfermoContent, tablaEnfermoContent } from "../dashboard/enfermo.js";
-import { removeErrors } from "../utils/utils.js";
-import { $modalInfoContainer, correctModalInfo, incorrectModalInfo } from "./modal-info.js";
-import { ERROR_MESSAGES } from "../dashboard/errors.js";
-import { sortColumn } from "../dashboard/sort.js";
-
-const $buttonNuevoEnfermo = document.getElementById('nuevo-enfermo');
+import { $tableEnfermo, changeOldTableEnfermoContent } from "../dashboard/enfermo.js";
+import { fetchOnResponseOperation } from "./modal.js";
+import { checkDni, dniRegex } from "../utils/checkers.js";
 
 // Modal
-const $modalEnfermoContainer = document.getElementById('modal-enfermo-container');
-const $modalEnfermo = document.getElementById('modal-enfermo');
-const $buttonCancelEnfermo = document.getElementById('cancel-enfermo');
+export const $modalEnfermoContainer = document.getElementById('modal-enfermo-container');
 
 // Data
 const $dniEnfermo = document.getElementById('dni-enfermo');
@@ -29,29 +23,7 @@ const $nombreCompaniaError = document.getElementById('nombre-compania-error');
 const $listaCompaniasItems = document.querySelectorAll('.lista-companias-item');
 const $buttonCrearEnfermo = document.getElementById('accept-enfermo');
 
-// Regex
-const dniRegex = new RegExp(/^[0-9]{8}[a-zA-Z]$/);
-
-// Modal
-$modalEnfermoContainer.addEventListener('mousedown', hideModalEnfermo);
-
-$modalEnfermo.addEventListener('mousedown', e => e.stopPropagation());
-
-$buttonCancelEnfermo.addEventListener('click', hideModalEnfermo);
-
-// Modal Form
-$buttonNuevoEnfermo.addEventListener('click', () => {
-    $searchEnfermo.value = '';
-    changeTableEnfermoContent(tablaEnfermoContent);
-    $modalEnfermoContainer.classList.remove('hide');
-})
-
-$dniEnfermo.addEventListener('focusout', removeErrors);
-$nombreEnfermo.addEventListener('focusout', removeErrors);
-$apellidosEnfermo.addEventListener('focusout', removeErrors);
-$dniDoctorEnfermo.addEventListener('focusout', removeErrors);
-$nombreCompania.addEventListener('focusout', removeErrors);
-
+// Events
 $dniEnfermo.addEventListener('keyup', () => {
     if (dniRegex.test($dniEnfermo.value) && checkDni($dniEnfermo.value)) {
         $dniIncorrectoImg.classList.add('hide');
@@ -61,16 +33,6 @@ $dniEnfermo.addEventListener('keyup', () => {
         $dniIncorrectoImg.classList.remove('hide');
     }
 })
-
-
-/* $dniDoctorEnfermo.addEventListener('focusout', () => hideList); */
-
-/* $listaDoctoresItems.forEach(listaDoctorItem => {
-    listaDoctorItem.addEventListener('click', e => {
-        $dniDoctorEnfermo.value = e.target.children[0].textContent;
-        $listaDoctores.classList.add('hide');
-    })
-}) */
 
 $buttonCrearEnfermo.addEventListener('click', e => {
     e.preventDefault();
@@ -132,45 +94,18 @@ $buttonCrearEnfermo.addEventListener('click', e => {
     fd.append($apellidosEnfermo.id, $apellidosEnfermo.value);
     fd.append($dniDoctorEnfermo.id, $dniDoctorEnfermo.value);
     fd.append($nombreCompania.id, $nombreCompania.value);
-    fetch('/api/controllers/insert.php', {
+    fetch('/api/controllers/insert-patient.php', {
         method: 'POST',
         body: fd
     })
     .then(response => {
-        hideModalEnfermo();
-        $modalInfoContainer.classList.remove('hide');
-        if (response.status != 200) {
-            incorrectModalInfo(ERROR_MESSAGES[response.status])
-            return;
-        }
-        $tableEnfermo.appendChild(new EnfermoRow($dniEnfermo.value, $nombreEnfermo.value, $apellidosEnfermo.value, $dniDoctorEnfermo.value, $nombreCompania.value).getRow());
-        changeOldTableEnfermoContent($tableEnfermo.innerHTML);
-        sortColumn($tableEnfermo, 0, -1);
-        clearFields();
-        correctModalInfo('El usuario se creó correctamente');
+        const containsError = fetchOnResponseOperation(response.status, $tableEnfermo,
+            new EnfermoRow($dniEnfermo.value, $nombreEnfermo.value, $apellidosEnfermo.value, $dniDoctorEnfermo.value, $nombreCompania.value).getRow(), changeOldTableEnfermoContent, clearFields, 'El usuario se creó correctamente');
+        if (containsError) return;
     })
 })
 
 // Functions
-/**
- * Comprueba si la letra de un DNI introducido se corresponde con dicho DNI o no
- * @param {string} dni 
- * @returns Si el número coincide con la letra, devolverá un true, sino, false
- */
-function checkDni(dni) {
-    const letras = ['T', 'R', 'W', 'A', 'G', 'M', 'Y', 'F', 'P', 'D', 'X', 'B', 'N', 'J', 'Z', 'S', 'Q', 'V', 'H', 'L', 'C', 'K', 'E'];
-    return letras[parseInt(dni.substring(0, dni.length - 1)) % 23] == dni.charAt(dni.length - 1);
-}
-
-function hideModalEnfermo() {
-    $modalEnfermo.classList.add('close-modal');
-    $modalEnfermo.addEventListener('animationend', function listener() {
-        $modalEnfermoContainer.classList.add('hide');
-        $modalEnfermo.classList.remove('close-modal');
-        $modalEnfermo.removeEventListener('animationend', listener);
-    })
-}
-
 function clearFields() {
     $dniEnfermo.value = '';
     $dniCorrectoImg.classList.add('hide');

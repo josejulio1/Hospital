@@ -44,20 +44,30 @@ function insert($enum, $arrayData) {
     return $result;
 }
 
-/* function searchBySurname($searchedSurname) {
+function updateMedicine($tableName, $id, $fields) {
     $db = Database::connect();
     if (!$db) {
         return http_response_code(SERVICE_UNAVAILABLE);
     }
-    $statement = $db -> prepare('SELECT * FROM v_enfermo_nombre_compania WHERE apellidos = ?');
-    $statement -> bind_param('s', $searchedSurname);
-    $statement -> execute();
-    $result = $statement -> get_result();
-    $rows = [];
-    while ($row = $result -> fetch_assoc()) {
-        $rows[] = $row;
+    $sentence = "UPDATE $tableName SET ";
+    $fieldsKeys = array_keys($fields);
+    $preparedValues = [];
+    $i = 0;
+    foreach ($fields as $field) {
+        $sentence .= $fieldsKeys[$i++] . " = ?,";
+        $preparedValues[] = $field;
+    }
+    $preparedValues[] = $id;
+    $sentence = substr($sentence, 0, strlen($sentence) - 1) . ' WHERE id = ?';
+    $statement = $db -> prepare($sentence);
+    $result = '';
+    try {
+        $statement -> execute($preparedValues);
+        $result = OK;
+    } catch (mysqli_sql_exception $e) {
+        $result = CONFLICT;
     }
     $db -> close();
-    return $rows;
-} */
+    return $result;
+}
 ?>

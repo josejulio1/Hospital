@@ -16,7 +16,7 @@
     color: var(--primario);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-evenly;
     padding: 2rem;
     font-weight: bold;
     text-align: center;
@@ -80,12 +80,6 @@
     }
 }
 
-@media (max-width: 1024px) {
-    .option p {
-        display: none;
-    }
-}
-
 .option:hover,
 .close-session:hover,
 .create:hover {
@@ -106,10 +100,68 @@
     cursor: pointer;
 }
 
-@media (max-width: 1024px) {
-    .close-session button {
-        display: none;
+@keyframes open-left-panel {
+    from {
+        height: 0vh;
+        opacity: 0;
     }
+
+    to {
+        height: 100vh;
+        opacity: 1;
+    }
+}
+
+@keyframes close-left-panel {
+    from {
+        height: 100vh;
+        opacity: 1;
+    }
+
+    to {
+        height: 0vh;
+        opacity: 0;
+    }
+}
+
+#open-left-panel {
+    display: none;
+}
+
+@media (max-width: 1023px) {
+    #open-left-panel {
+        display: block;
+        position: fixed;
+        left: 50%;
+        bottom: 30px;
+        transform: translateX(-50%);
+        background-color: var(--secundario);
+        padding: .6rem;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid var(--primario);
+    }
+
+    #open-left-panel img {
+        filter: invert(1);
+    }
+
+    .left {
+        animation: open-left-panel .5s ease-in-out;
+        height: 100dvh;
+    }
+}
+
+.close-left-panel {
+    animation: close-left-panel .4s ease-in-out;
+}
+
+/* Utils Left */
+.show-left-panel {
+    display: flex !important;
 }
 
 /* Derecha */
@@ -208,6 +260,12 @@ table tbody tr:nth-child(odd) {
     background-color: var(--primario);
 }
 
+#table-medicamento tr:hover {
+    background-color: var(--seleccionado) !important;
+    color: var(--primario);
+    cursor: pointer;
+}
+
 table td {
     padding: .6rem;
     text-align: center;
@@ -238,6 +296,6 @@ th img {
     justify-content: center;
 }
 
-.sorted-desc {
+.rotate-180deg {
     transform: rotate(180deg);
 }
