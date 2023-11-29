@@ -10,11 +10,15 @@ const $error = document.getElementById('error');
 const $buttonText = document.getElementById('button-text');
 const $loading = document.getElementById('loading');
 
+/**
+ * Mensajes de error que hay al conectarse con la API REST por la parte de autenticación
+ */
 export const ERROR_MESSAGES = {
     404: 'Usuario o contraseña incorrectos',
     503: 'No se pudo conectar a la base de datos. Inténtelo más tarde'
 }
 
+// Events
 $usuario.addEventListener('focusout', removeErrors);
 $contrasenia.addEventListener('focusout', removeErrors);
 

@@ -17,17 +17,13 @@ foreach ($formValues as $formValue) {
         return http_response_code(NOT_FOUND);
     }
 }
-$precio = $formValues[1];
-if (!preg_match($isNumber, $precio)) {
-    return http_response_code(NOT_FOUND);
-}
-$fechaCaducidad = $formValues[2];
-if (!preg_match($isDate, $fechaCaducidad)) {
+$dni = $formValues[0];
+if (strlen($dni) != 9 || !checkDni($dni)) {
     return http_response_code(NOT_FOUND);
 }
 
 require_once __DIR__ . '/../../db/Database.php';
-require_once __DIR__ . '/../../db/models/medicamento_no_id.php';
+require_once __DIR__ . '/../../db/models/doctor.php';
 require_once __DIR__ . '/../utils/crud.php';
-return http_response_code(insert(medicamento::class, $_POST));
+return http_response_code(insert(doctor::class, $_POST));
 ?>

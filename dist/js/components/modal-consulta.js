@@ -1,6 +1,6 @@
-import { ConsultaRow } from "../models/ConsultaRow.js";
+import { ConsultaRow } from "../models/row/ConsultaRow.js";
 import { fetchOnResponseOperation } from "./modal.js";
-import { isDate, isNumber } from "../utils/checkers.js";
+import { isDate, isHtmlTag, isNumber } from "../utils/checkers.js";
 import { $tableConsulta, changeOldTableConsultaContent } from "../dashboard/consulta.js";
 
 // Modal
@@ -9,15 +9,18 @@ export const $modalConsultaContainer = document.getElementById('modal-consulta-c
 // Data
 const $dniEnfermo = document.getElementById('dni-enfermo-consulta');
 const $dniEnfermoError = document.getElementById('dni-enfermo-consulta-error');
+export const $listaEnfermosConsulta = document.getElementById('lista-enfermos');
 const $listaEnfermosItems = document.querySelectorAll('.lista-enfermos-item-consulta');
 const $dniDoctor = document.getElementById('dni-doctor-consulta');
 const $dniDoctorError = document.getElementById('dni-doctor-consulta-error');
+export const $listaDoctoresConsulta = document.getElementById('lista-doctores');
 const $listaDoctoresItems = document.querySelectorAll('.lista-doctores-item-consulta');
 const $numSala = document.getElementById('num-sala-consulta');
 const $numSalaError = document.getElementById('num-sala-consulta-error');
 const $fechaConsulta = document.getElementById('fecha-consulta');
 const $medicamento = document.getElementById('medicamento-consulta');
 const $medicamentoError = document.getElementById('medicamento-consulta-error');
+export const $listaMedicamentosConsulta = document.getElementById('lista-medicamentos-consulta');
 const $listaMedicamentoItems = document.querySelectorAll('.lista-medicamentos-item-consulta');
 const $fechaConsultaError = document.getElementById('fecha-consulta-error');
 const $buttonCrearConsulta = document.getElementById('accept-consulta');
@@ -35,7 +38,7 @@ $buttonCrearConsulta.addEventListener('click', e => {
             break;
         }
     }
-    if (!$dniEnfermo.value || !dniEnfermoExiste) {
+    if (isHtmlTag.test($dniEnfermo.value) || !$dniEnfermo.value || !dniEnfermoExiste) {
         $dniEnfermo.classList.add('border-input-error');
         $dniEnfermoError.classList.remove('hide');
         hayErrores = true;
@@ -49,19 +52,19 @@ $buttonCrearConsulta.addEventListener('click', e => {
             break;
         }
     }
-    if (!$dniDoctor.value || !dniDoctorExiste) {
+    if (isHtmlTag.test($dniDoctor.value) || !$dniDoctor.value || !dniDoctorExiste) {
         $dniDoctor.classList.add('border-input-error');
         $dniDoctorError.classList.remove('hide');
         hayErrores = true;
     }
 
-    if (!$numSala.value || !isNumber.test($numSala.value)) {
+    if (isHtmlTag.test($numSala.value) || !$numSala.value || !isNumber.test($numSala.value)) {
         $numSala.classList.add('border-input-error');
         $numSalaError.classList.remove('hide');
         hayErrores = true;
     }
 
-    if (!$fechaConsulta.value || !isDate.test($fechaConsulta.value)) {
+    if (isHtmlTag.test($fechaConsulta.value) || !$fechaConsulta.value || !isDate.test($fechaConsulta.value)) {
         $fechaConsulta.classList.add('border-input-error');
         $fechaConsultaError.classList.remove('hide');
         hayErrores = true;
@@ -113,6 +116,10 @@ $buttonCrearConsulta.addEventListener('click', e => {
 })
 
 // Functions
+/**
+ * Elimina la información de los input en caso de que se haya creado exitosamente un registro,
+ * para poder introducir uno nuevo a continuación y que el usuario no tenga que borrar los campos manualmente
+ */
 function clearFields() {
     $dniEnfermo.value = '';
     $dniDoctor.value = '';

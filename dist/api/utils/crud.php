@@ -2,6 +2,10 @@
 require_once __DIR__ . '/http-status-codes.php';
 require_once __DIR__ . '/../../db/Database.php';
 
+/**
+ * Selecciona todas las columnas de una tabla pasada por enum
+ * @param $enum Clase enum de la que coger el nombre de la tabla
+ */
 function selectAll($enum) {
     $db = Database::connect();
     if (!$db) {
@@ -17,7 +21,12 @@ function selectAll($enum) {
     return $rows;
 }
 
-function insert($enum, $arrayData) {
+/**
+ * Inserta un nuevo registro en una de las tablas
+ * @param $enum Clase enum para recoger información de las columnas de la tabla
+ * @param array $arrayData Array del que se recogen los datos enviados para ser insertados 
+ */
+function insert($enum, array $arrayData) {
     $db = Database::connect();
     if (!$db) {
         return http_response_code(SERVICE_UNAVAILABLE);
@@ -43,13 +52,17 @@ function insert($enum, $arrayData) {
     $db -> close();
     return $result;
 }
-
-function updateMedicine($tableName, $id, $fields) {
+/**
+ * Actualiza exclusivamente un registro de la tabla Medicamento
+ * @param $id ID de la fila a actualizar
+ * @param array $fields Array asociativo de nombre de columna y valor al que se quiere actualizar
+ */
+function updateMedicine($id, array $fields) {
     $db = Database::connect();
     if (!$db) {
         return http_response_code(SERVICE_UNAVAILABLE);
     }
-    $sentence = "UPDATE $tableName SET ";
+    $sentence = 'UPDATE ' . medicamento::class . ' SET ';
     $fieldsKeys = array_keys($fields);
     $preparedValues = [];
     $i = 0;

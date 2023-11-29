@@ -141,8 +141,8 @@ require_once __DIR__ . '/../db/models/v_consulta_medicamento.php';
                             <label for="dni-enfermo">DNI</label>
                             <div class="dni-container">
                                 <input type="text" class="input-form" id="dni-enfermo" maxlength="9" required>
-                                <img id="dni-correcto" class="hide" src="../img/svg/green-tic.svg" alt="Correct">
-                                <img id="dni-incorrecto" class="hide" src="../img/svg/error.svg" alt="Incorrect">
+                                <img id="dni-enfermo-correcto" class="hide" src="../img/svg/green-tic.svg" alt="Correct">
+                                <img id="dni-enfermo-incorrecto" class="hide" src="../img/svg/error.svg" alt="Incorrect">
                             </div>
                             <article id="dni-enfermo-error" class="input-error hide">
                                 <img src="../img/svg/alert.svg" alt="Alert">
@@ -173,7 +173,7 @@ require_once __DIR__ . '/../db/models/v_consulta_medicamento.php';
                             <label for="dni-doctor-enfermo">DNI Doctor Asignado</label>
                             <div class="list-relative">
                                 <input type="text" class="input-form" id="dni-doctor-enfermo" maxlength="9" required>
-                                <div class="list hide">
+                                <div class="list hide" id="lista-doctores-enfermo">
                                     <?php
                                     $rowsDoctor = selectAll(doctor::class);
                                     foreach ($rowsDoctor as $row) { ?>
@@ -195,7 +195,7 @@ require_once __DIR__ . '/../db/models/v_consulta_medicamento.php';
                             <label for="nombre-compania">Compañía</label>
                             <div class="list-relative">
                                 <input type="text" class="input-form" id="nombre-compania" required>
-                                <div class="list hide">
+                                <div class="list hide" id="lista-companias-enfermo">
                                     <?php
                                     $rowsCompania = selectAll(compania::class);
                                     $reflectCompania = new ReflectionClass(compania::class);
@@ -321,11 +321,11 @@ require_once __DIR__ . '/../db/models/v_consulta_medicamento.php';
                         $rowsMedicamento = selectAll(medicamento::class);
                         $reflectMedicamento = new ReflectionClass(medicamento::class);
                         $keysMedicamento = array_keys($reflectMedicamento -> getConstants());
+                        $numMedicamentos = count($keysMedicamento);
                         foreach ($rowsMedicamento as $row) { ?>
                             <tr value="<?php echo $row['id']; ?>">
                             <?php
-                            $numKeysMedicamento = count($keysMedicamento);
-                            for ($i = 1; $i < $numKeysMedicamento; $i++) { ?>
+                            for ($i = 1; $i < $numMedicamentos; $i++) { ?>
                                     <td><?php echo $row[$keysMedicamento[$i]]; ?></td>
                                     <?php
                             } ?>
@@ -466,7 +466,11 @@ require_once __DIR__ . '/../db/models/v_consulta_medicamento.php';
                     <div class="row">
                         <div class="column">
                             <label for="dni-doctor">DNI</label>
-                            <input type="text" class="input-form" id="dni-doctor" maxlength="9" required>
+                            <div class="dni-container">
+                                <input type="text" class="input-form" id="dni-doctor" maxlength="9" required>
+                                <img id="dni-doctor-correcto" class="hide" src="../img/svg/green-tic.svg" alt="Correct">
+                                <img id="dni-doctor-incorrecto" class="hide" src="../img/svg/error.svg" alt="Incorrect">
+                            </div>
                             <article id="dni-doctor-error" class="input-error hide">
                                 <img src="../img/svg/alert.svg" alt="Alert">
                                 <p>Introduzca un DNI. Formato (12345678A)</p>
@@ -580,7 +584,7 @@ require_once __DIR__ . '/../db/models/v_consulta_medicamento.php';
                             <label for="dni-enfermo-consulta">DNI Enfermo</label>
                             <div class="list-relative">
                                 <input type="text" class="input-form" id="dni-enfermo-consulta" maxlength="9" required>
-                                <div class="list hide">
+                                <div class="list hide" id="lista-enfermos">
                                     <?php
                                     foreach ($rowsEnfermo as $row) { ?>
                                         <article class="list-item lista-enfermos-item-consulta">
@@ -601,7 +605,7 @@ require_once __DIR__ . '/../db/models/v_consulta_medicamento.php';
                             <label for="dni-doctor-consulta">DNI Doctor Asignado</label>
                             <div class="list-relative">
                                 <input type="text" class="input-form" id="dni-doctor-consulta" maxlength="9" required>
-                                <div class="list hide">
+                                <div class="list hide" id="lista-doctores">
                                     <?php
                                     foreach ($rowsDoctor as $row) { ?>
                                         <article class="list-item lista-doctores-item-consulta">
@@ -642,7 +646,7 @@ require_once __DIR__ . '/../db/models/v_consulta_medicamento.php';
                             <label for="medicamento-consulta">Medicamento (Opcional)</label>
                             <div class="list-relative">
                                 <input type="text" class="input-form" id="medicamento-consulta" required>
-                                <div class="list hide">
+                                <div class="list hide" id="lista-medicamentos-consulta">
                                     <?php
                                     foreach ($rowsMedicamento as $row) { ?>
                                         <article class="list-item lista-medicamentos-item-consulta">

@@ -38,15 +38,10 @@ CREATE TABLE Consulta (
 
 CREATE TABLE Medicamento (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(50) UNIQUE NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
     precio FLOAT(5,2) NOT NULL,
     fecha_caducidad DATE NOT NULL
 );
-
-/* CREATE TABLE Consulta_Medicamento (
-    id_consulta INT NOT NULL,
-    id_medicamento INT NOT NULL
-); */
 
 -- Alter
 ALTER TABLE Compania
@@ -71,6 +66,6 @@ ADD CONSTRAINT fk_consulta_idMedicamento FOREIGN KEY(id_medicamento) REFERENCES 
 
 -- Views
 CREATE VIEW v_consulta_medicamento AS
-SELECT c.dni_enfermo, c.dni_doctor, c.fecha, c.num_sala, m.nombre AS "nombre_medicamento", m.precio AS "precio_medicamento", m.fecha_caducidad AS "fecha_caducidad_medicamento"
+SELECT c.dni_enfermo, c.dni_doctor, c.fecha, c.num_sala, m.id AS "id_medicamento", m.nombre AS "nombre_medicamento", m.precio AS "precio_medicamento", m.fecha_caducidad AS "fecha_caducidad_medicamento"
 FROM consulta c
 LEFT JOIN medicamento m ON c.id_medicamento = m.id;

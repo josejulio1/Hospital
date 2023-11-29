@@ -1,6 +1,11 @@
-export class ConsultaRow {
+import { Row } from "./Row.js";
+
+/**
+ * Crea una fila para la tabla Consulta
+ */
+export class ConsultaRow extends Row {
     constructor(dniEnfermo, dniDoctor, numSala, fechaConsulta, nombreMedicamento, precioMedicamento, fechaCaducidadMedicamento) {
-        this.row = document.createElement('tr');
+        const row = document.createElement('tr');
         const dniEnfermoTd = document.createElement('td');
         const dniDoctorTd = document.createElement('td');
         const numSalaTd = document.createElement('td');
@@ -17,16 +22,13 @@ export class ConsultaRow {
         precioMedicamentoTd.textContent = precioMedicamento;
         fechaCaducidadMedicamentoTd.textContent = fechaCaducidadMedicamento;
 
-        this.row.appendChild(dniEnfermoTd);
-        this.row.appendChild(dniDoctorTd);
-        this.row.appendChild(numSalaTd);
-        this.row.appendChild(fechaConsultaTd);
-        this.row.appendChild(nombreMedicamentoTd);
-        this.row.appendChild(precioMedicamentoTd);
-        this.row.appendChild(fechaCaducidadMedicamentoTd);
-    }
-
-    getRow() {
-        return this.row;
+        row.appendChild(dniEnfermoTd);
+        row.appendChild(dniDoctorTd);
+        row.appendChild(numSalaTd);
+        row.appendChild(fechaConsultaTd);
+        row.appendChild(nombreMedicamentoTd);
+        row.appendChild(precioMedicamentoTd);
+        row.appendChild(fechaCaducidadMedicamentoTd);
+        super(row);
     }
 }

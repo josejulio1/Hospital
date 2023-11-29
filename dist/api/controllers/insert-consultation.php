@@ -10,13 +10,13 @@ if (!$_SESSION) {
 }
 
 // Volver a validar los datos
+require_once '../utils/checkers.php';
 $formValues = array_values($_POST);
 foreach ($formValues as $formValue) {
-    if (!$formValue) {
+    if (!$formValue || preg_match($isHtmlTag, $formValue)) {
         return http_response_code(NOT_FOUND);
     }
 }
-require_once '../utils/checkers.php';
 $dniEnfermo = $formValues[0];
 if (!checkDni($dniEnfermo)) {
     return http_response_code(NOT_FOUND);
@@ -33,12 +33,15 @@ $fechaConsulta = $formValues[3];
 if (!preg_match($isDate, $fechaConsulta)) {
     return http_response_code(NOT_FOUND);
 }
-$idMedicamento = $formValues[4];
-if (!preg_match($isNumber, $idMedicamento)) {
-    return http_response_code(NOT_FOUND);
+if (isset($idMedicamento)) {
+    $idMedicamento = $formValues[4];
+    if (!preg_match($isNumber, $idMedicamento)) {
+        return http_response_code(NOT_FOUND);
+    }
 }
 require_once __DIR__ . '/../../db/Database.php';
-require_once __DIR__ . '/../../db/models/consulta.php';
+require_once __DIR__ . '/../../db/models/consulta_no_id_medicamento.php';
 require_once __DIR__ . '/../utils/crud.php';
+// TODO: Arreglar consulta
 return http_response_code(insert(consulta::class, $_POST));
 ?>

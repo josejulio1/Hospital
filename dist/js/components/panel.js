@@ -42,6 +42,7 @@ $openLeftPanel.addEventListener('click', e => {
         $left.classList.add('show-left-panel');
     }
 })
+// Fin Vista Móvil
 
 $cerrarSesion.addEventListener('click', () => {
     fetch('/api/controllers/close-session.php', {

@@ -13,7 +13,7 @@ if (!$_SESSION) {
 require_once '../utils/checkers.php';
 $formValues = array_values($_POST);
 foreach ($formValues as $formValue) {
-    if (!$formValue) {
+    if (!$formValue || preg_match($isHtmlTag, $formValue)) {
         return http_response_code(NOT_FOUND);
     }
 }

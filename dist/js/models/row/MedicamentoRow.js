@@ -1,6 +1,11 @@
-export class MedicamentoRow {
+import { Row } from "./Row.js";
+
+/**
+ * Crea una fila para la tabla Medicamento
+ */
+export class MedicamentoRow extends Row {
     constructor(nombre, precio, fechaCaducidad) {
-        this.row = document.createElement('tr');
+        const row = document.createElement('tr');
         const nombreTd = document.createElement('td');
         const precioTd = document.createElement('td');
         const fechaCaducidadTd = document.createElement('td');
@@ -9,12 +14,9 @@ export class MedicamentoRow {
         precioTd.textContent = precio;
         fechaCaducidadTd.textContent = fechaCaducidad;
 
-        this.row.appendChild(nombreTd);
-        this.row.appendChild(precioTd);
-        this.row.appendChild(fechaCaducidadTd);
-    }
-
-    getRow() {
-        return this.row;
+        row.appendChild(nombreTd);
+        row.appendChild(precioTd);
+        row.appendChild(fechaCaducidadTd);
+        super(row);
     }
 }

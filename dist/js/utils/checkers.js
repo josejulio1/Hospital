@@ -9,8 +9,7 @@ export function checkDni(dni) {
 }
 
 // Regex
-export const noXSS = new RegExp(/<script>*.*<\/script>/);
-// TODO: Controlar XSS
+export const isHtmlTag = new RegExp(/<.*|>/);
 export const dniRegex = new RegExp(/^[0-9]{8}[a-zA-Z]$/);
-export const isNumber = new RegExp(/(^[0-9]{1,}$)|(^[1-9]{1,}\.[0-9]{1,2}$)/);
+export const isNumber = new RegExp(/(^[0-9]{1,}$)|(^[0-9]{1,}\.[0-9]{1,2}$)/);
 export const isDate = new RegExp(/^[0-9]{4}\-([0-9]|1[012])\-([0-2][0-9]|3[01])$/);

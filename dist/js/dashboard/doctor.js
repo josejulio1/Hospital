@@ -47,6 +47,6 @@ $buttonNuevoCompania.addEventListener('click', () => {
  * Esta función es necesaria para poder cambiar las filas de la tabla desde otro módulo, ya que no se
  * puede cambiar el valor de la variable original cuando esta es exportada
  */
-export function changeOldTableCompaniaContent(content) {
+export function changeOldTableDoctorContent(content) {
     tablaDoctorContent = content;
 }

@@ -1,5 +1,5 @@
 import { $tableMedicamento, changeOldTableMedicamentoContent } from "../../dashboard/medicamento.js";
-import { isNumber } from "../../utils/checkers.js";
+import { isHtmlTag, isNumber } from "../../utils/checkers.js";
 import { hideModal } from "../modal.js";
 import { $modalInfoContainer, correctModalInfo, incorrectModalInfo } from "../modal-info.js";
 import { ERROR_MESSAGES } from "../../dashboard/errors.js";
@@ -18,13 +18,13 @@ $buttonActualizarMedicamento.addEventListener('click', e => {
     e.preventDefault();
 
     let hayErrores = false;
-    if (!$nombreMedicamentoActualizar.value) {
+    if (isHtmlTag.test($nombreMedicamentoActualizar.value) || !$nombreMedicamentoActualizar.value) {
         $nombreMedicamentoActualizar.classList.add('border-input-error');
         $nombreMedicamentoActualizarError.classList.remove('hide');
         hayErrores = true;
     }
 
-    if (!$precioMedicamentoActualizar.value || !isNumber.test($precioMedicamentoActualizar.value)) {
+    if (isHtmlTag.test($precioMedicamentoActualizar.value) || !$precioMedicamentoActualizar.value || !isNumber.test($precioMedicamentoActualizar.value)) {
         $precioMedicamentoActualizar.classList.add('border-input-error');
         $precioMedicamentoActualizarError.classList.remove('hide');
         hayErrores = true;
@@ -47,12 +47,11 @@ $buttonActualizarMedicamento.addEventListener('click', e => {
         $modalInfoContainer.classList.remove('hide');
         if (response.status != 200) {
             hideModal();
-            incorrectModalInfo(ERROR_MESSAGES[responseStatus]);
+            incorrectModalInfo(ERROR_MESSAGES[response.status]);
             return;
         }
         selectedRow.children[0].textContent = $nombreMedicamentoActualizar.value;
         selectedRow.children[1].textContent = $precioMedicamentoActualizar.value;
-        // TODO: Al actualizar el medicamento, actualizarlo en tiempo real en la tabla consultas
         hideModal();
         changeOldTableMedicamentoContent($tableMedicamento.innerHTML);
         clearFields();
@@ -60,6 +59,11 @@ $buttonActualizarMedicamento.addEventListener('click', e => {
     })
 })
 
+// Functions
+/**
+ * Elimina la información de los input en caso de que se haya creado exitosamente un registro,
+ * para poder introducir uno nuevo a continuación y que el usuario no tenga que borrar los campos manualmente
+ */
 function clearFields() {
     $nombreMedicamentoActualizar.value = '';
     $precioMedicamentoActualizar.value = '';

@@ -10,22 +10,22 @@ if (!$_SESSION) {
 }
 
 // Volver a validar los datos
+require_once '../utils/checkers.php';
 $formValues = array_values($_POST);
 foreach ($formValues as $formValue) {
-    if (!$formValue) {
+    if (!$formValue || preg_match($isHtmlTag, $formValue)) {
         return http_response_code(NOT_FOUND);
     }
 }
-require_once '../utils/checkers.php';
 $precio = $formValues[2];
 if (!preg_match($isNumber, $precio)) {
     return http_response_code(NOT_FOUND);
 }
 
 require_once __DIR__ . '/../../db/Database.php';
-require_once __DIR__ . '/../../db/models/medicamento.php';
+require_once __DIR__ . '/../../db/models/medicamento_no_id.php';
 require_once __DIR__ . '/../utils/crud.php';
-return http_response_code(updateMedicine(medicamento::class, $_POST['id'], [
+return http_response_code(updateMedicine($_POST['id'], [
     'nombre' => $_POST['nombre-medicamento-actualizar'],
     'precio' => $_POST['precio-medicamento-actualizar']
 ]));

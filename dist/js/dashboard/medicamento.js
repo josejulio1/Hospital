@@ -62,6 +62,11 @@ export function changeOldTableMedicamentoContent(content) {
     tablaMedicamentoContent = content;
 }
 
+/**
+ * Hace que al pulsar una fila de la tabla medicamento, se muestre el modal de actualizar medicamento y los datos
+ * de la fila se pongan en el modal
+ * @param {Event} e Fila que acciona el evento
+ */
 export function clickEventListenerMedicamentoRow(e) {
     const target = e.target.parentNode;
     target.id = 'selected-row';

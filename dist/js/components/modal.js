@@ -1,4 +1,5 @@
 import { ERROR_MESSAGES } from "../dashboard/errors.js";
+import { checkDni, dniRegex } from "../utils/checkers.js";
 import { removeErrors } from "../utils/utils.js";
 import { $modalInfoContainer, correctModalInfo, incorrectModalInfo } from "./modal-info.js";
 
@@ -15,6 +16,22 @@ document.querySelectorAll('.modal').forEach(modal => {
 // Eliminar mensaje de error al quitar foco en cualquier campo de texto
 document.querySelectorAll('.input-form').forEach(inputForm => {
     inputForm.addEventListener('focusout', removeErrors);
+})
+
+// Comprobar en los campos con DNI si el DNI introducido es correcto o no
+document.querySelectorAll('.dni-container').forEach(dniContainer => {
+    dniContainer.children[0].addEventListener('keyup', e => {
+        const target = e.target;
+        const dniCorrectoImg = document.getElementById(`${target.id}-correcto`);
+        const dniIncorrectoImg = document.getElementById(`${target.id}-incorrecto`);
+        if (dniRegex.test(target.value) && checkDni(target.value)) {
+            dniIncorrectoImg.classList.add('hide');
+            dniCorrectoImg.classList.remove('hide');
+        } else {
+            dniCorrectoImg.classList.add('hide');
+            dniIncorrectoImg.classList.remove('hide');
+        }
+    })
 })
 
 // Cerrar modal al pulsar botón cancelar
@@ -62,6 +79,19 @@ export function hideModal() {
     })
 }
 
+/**
+ * Esta función se utiliza para evitar la redundancia de código al obtener una respuesta de la API REST,
+ * ya que se realiza el mismo proceso pero con distintas variables. Se utiliza al crear un registro nuevo en
+ * cualquier tabla
+ * @param {Number} responseStatus Código de respuesta HTTP recibida por la API REST
+ * @param {HTMLElement} tableElement Tabla a la que se le quiere añadir una fila en caso de éxito
+ * @param {*} row Fila que se quiere añadir a la tabla
+ * @param {*} cbChangeOldTable Función para cambiar la tabla antigua, para que cuando se haya una búsqueda en la tabla,
+ * al quitar la búsqueda, volver a tener las filas de antes más la nueva
+ * @param {*} cbClearFields Función para borrar los valores de los input del modal en caso de éxito, para poder volver a introducir datos
+ * @param {*} correctMessage Mensaje a poner en el modal de información en caso de éxito
+ * @returns Devuelve false si no contiene errores (código de estado 200) y true si hubo error (cualquier código de estado que no sea 200)
+ */
 export function fetchOnResponseOperation(responseStatus, tableElement, row, cbChangeOldTable, cbClearFields, correctMessage) {
     let containsError = true;
     hideModal();
@@ -72,7 +102,6 @@ export function fetchOnResponseOperation(responseStatus, tableElement, row, cbCh
     }
     tableElement.appendChild(row);
     cbChangeOldTable(tableElement.innerHTML);
-    /* sortColumn(tableElement, 0, -1); */
     cbClearFields();
     correctModalInfo(correctMessage);
     return !containsError;

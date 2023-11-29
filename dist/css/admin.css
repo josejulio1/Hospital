@@ -151,7 +151,7 @@
 
     .left {
         animation: open-left-panel .5s ease-in-out;
-        height: 100dvh;
+        height: 100vh;
     }
 }
 
